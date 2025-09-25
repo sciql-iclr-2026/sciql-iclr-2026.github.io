@@ -1,0 +1,135 @@
+<!-- Meta data -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Offline Reinforcement Learning of High-Quality Behaviors Under Robust Style Alignment.">
+  <meta name="keywords" content="SCIQL">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offline Reinforcement Learning of High-Quality Behaviors Under Robust Style Alignment.</title>
+
+  <!-- Google fonts & Bulma CSS framework -->
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <!-- KaTeX for fast client‑side LaTeX rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {delimiters:[{left:'$$', right:'$$', display:true},{left:'\\[', right:'\\]', display:true},{left:'$', right:'$', display:false},{left:'\\(', right:'\\)', display:false}]});"></script>
+
+  <!-- JS dependencies -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+   <!-- Quick utility styles (orange theme + responsive rows) -->
+   <style>
+    /* --------  Colour palette  -------- */
+    :root{
+      --orange:#d98200;
+      --orange-light:#fff4e5;
+      --orange-mid:#fdebd0;
+    }
+    .has-text-orange{color:var(--orange)!important;}
+    .has-bg-orange{background:var(--orange-light)!important;}
+    .border-orange{border:1px solid var(--orange)!important;}
+
+    /* --------  Generic flex rows  -------- */
+    .row-flex{display:flex;flex-wrap:wrap;gap:1rem;justify-content:flex-start}
+
+    /* Section‑1 figures (3 per row, fixed height so they never wrap) */
+    .row-flex.fig .item{flex:0 0 calc(33.333% - 1rem)}
+    .row-flex.fig .item img{width:100%;height:140px;object-fit:cover;}
+
+    /* Env images row (3 per row, smaller height) */
+    .row-flex.env .item{flex:0 0 calc(33.333% - 1rem)}
+    .row-flex.env .item img{width:100%;height:140px;object-fit:cover;}
+  </style>
+</head>
+<body>
+
+<!-- Authors -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Offline Reinforcement Learning of High-Quality Behaviors Under Robust Style Alignment</h1>
+              
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://drive.google.com/file/d/1MimuO7RVa3O9Cse52YiDK1YB1WYL9Lo0/view?usp=sharing"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+
+              <!-- Datasets -->
+              <span class="link-block">
+                <a href="https://drive.google.com/file/d/1BggqIv7sJCr2NBkdle15MPD-I2TM5sHr/view?usp=sharing"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Datasets</span>
+                  </a>
+              </span>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            We study offline reinforcement learning of style-conditioned policies using explicit style supervision via subtrajectory labeling functions. In this setting, aligning style with high task performance is particularly challenging due to distribution shift and inherent conflicts between style and reward. Existing methods, despite introducing numerous definitions of style, often fail to reconcile these objectives effectively. To address these challenges, we propose a unified definition of behavior style and instantiate it into a practical framework. Building on this, we introduce Style-Conditioned Implicit Q-Learning (SCIQL), which leverages offline goal-conditioned RL techniques, such as hindsight relabeling and value learning, and combine it with a new Gated Advantage Weighted Regression mechanism to efficiently optimize task performance while preserving style alignment. Experiments demonstrate that SCIQL achieves superior performance on both objectives compared to prior offline methods.
+          </p>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            Template borrowed from the <a href=" https://nerfies.github.io/"> code</a> of the Nerfies website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
