@@ -112,6 +112,514 @@
   </div>
 </section>
 
+<!-- ===== 1. SCALING OFFLINE GCRL ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Challenges</h2>
+      <ul style="list-style-type: disc; padding-left: 1.5rem;">
+        <li><strong>Style definition:</strong> Existing approaches trade off interpretability, labeling cost, alignment measurement, and credit assignment, making a general definition difficult.</li>
+        <li><strong>Distribution shift:</strong> Style conditioning exacerbates offline RL distribution shift, creating mismatches between visited states and target styles that hinder robust alignment.</li>
+        <li><strong>Task–style misalignment:</strong> Task performance and style alignment often conflict, and prior solutions sacrifice alignment when optimizing for tasks.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Optional: tiny helper style to keep all figures consistent -->
+<style>
+  .eq-figure,
+  .result-figure {
+    max-width: 700px;      /* same horizontal size for all figures */
+    margin: 0 auto;        /* center inside the box */
+  }
+  .eq-figure img,
+  .result-figure img {
+    width: 100%;
+    height: auto;
+  }
+  .fig-cap {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+</style>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Contributions</h2>
+      <ul style="list-style-type: disc; padding-left: 1.5rem;">
+        <li><strong>General formulation:</strong> We cast stylized policy learning as a generalization of goal-conditioned RL, showing that style alignment corresponds to optimizing a style occupancy measure.</li>
+        <li><strong>Data programming with labeling functions:</strong> We instantiate our definition using labeling functions on trajectory windows, which mitigates credit assignment challenges and enables fast, interpretable style annotations for both training and evaluation.</li>
+        <li><strong>SCIQL algorithm:</strong> We introduce Style-Conditioned Implicit Q-Learning (SCIQL), which leverages advantage signals, style relabeling, and trajectory stitching to achieve robust style alignment.</li>
+        <li><strong>GAWR method:</strong> We propose Gated Advantage Weighted Regression (GAWR), using advantage functions as gates to improve task performance while preserving style alignment.</li>
+        <li><strong>Empirical validation:</strong> We provide diverse stylized RL tasks and show through extensive experiments that SCIQL outperforms prior work on both style alignment and style-conditioned task performance optimization, with clean JAX implementations and datasets.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+    
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Algorithm</h2>
+      
+      <!-- 1. Task Values -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li><strong>Task Value Learning (IQL):</strong> We employ Implicit Q-Learning to learn the task utility. By using expectile regression, we estimate the value of the best actions within the dataset support without querying out-of-distribution samples, providing a stable signal for task maximization.</li>
+      </ul>
+      <figure class="image eq-figure mb-5">
+        <img src="include/task_values.png" alt="Task-value objective (IQL head)">
+        <figcaption class="fig-cap">Task values</figcaption>
+      </figure>
+
+      <!-- 2. Style Values -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li><strong>Style Value Estimation:</strong> In parallel, we train a style-conditioned value function. This critic estimates the cumulative probability or "occupancy" of satisfying the specific behavioral constraints defined by our labeling functions, allowing the agent to quantify its alignment with the desired style.</li>
+      </ul>
+      <figure class="image eq-figure mb-5">
+        <img src="include/style_values.png" alt="Style-value objective">
+        <figcaption class="fig-cap">Style values</figcaption>
+      </figure>
+
+      <!-- 3. GAWR -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li><strong>Gated Policy Extraction (GAWR):</strong> To balance the trade-off, we propose Gated Advantage Weighted Regression. This step uses the style value as a <strong>hard gate</strong> (filtering out actions that do not meet the style threshold) and the task advantage as a <strong>soft weight</strong>, ensuring the policy maximizes task reward <em>only</em> among style-compliant actions.</li>
+      </ul>
+      <figure class="image eq-figure mb-5">
+        <img src="include/gawr.png" alt="Gated Advantage Weighted Regression (GAWR)">
+        <figcaption class="fig-cap">Gated Advantage Weighted Regression (GAWR)</figcaption>
+      </figure>
+
+      <!-- 4. Pipeline -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li><strong>SCIQL Pipeline:</strong> The full architecture integrates offline trajectory processing with style relabeling to improve task performance while preserving style alignment. In practice, this can be done within one global loop.</li>
+      </ul>
+      <figure class="image eq-figure">
+        <img src="include/algo.png" alt="SCIQL pipeline">
+        <figcaption class="fig-cap">SCIQL with GAWR pipeline</figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+  
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Experimental Results</h2>
+
+      <!-- 1. Style Alignment Results -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li>
+          <strong>Style Alignment Comparison:</strong> SCIQL achieves superior style alignment across all datasets, significantly outperforming baselines by leveraging value-based trajectory stitching.
+          <ul style="list-style-type: circle; margin-top: 0.5rem; margin-left: 1.5rem;">
+            <li><strong>Necessity of Conditioning:</strong> The large gap between BC and CBC confirms that explicit style conditioning is essential.</li>
+            <li><strong>Limits of Baselines:</strong> Methods like SORL ($\beta=0$) and BCPMI perform similarly to CBC as they lack effective style relabeling mechanisms.</li>
+            <li><strong>Value Learning Advantage:</strong> While SCBC improves upon baselines via stitching, SCIQL's dominance proves that value learning significantly enhances policy extraction.</li>
+            <li><strong>Robustness to Noise:</strong> In <em>halfcheetah-vary</em>, SCIQL maintains high alignment despite noisy styles, whereas baselines suffer performance drops.</li>
+          </ul>
+        </li>
+      </ul>
+      
+      <figure class="image result-figure mb-5">
+        <img src="include/style_alignment.png" alt="Style alignment results">
+        <figcaption class="fig-cap">Style alignment results</figcaption>
+      </figure>
+
+
+      <!-- 2. SCTPO Results -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li>
+          <strong>Style-Conditioned Task Performance Optimization (SCTPO):</strong> We compare SCIQL variants (using GAWR) against SORL baselines, demonstrating that GAWR effectively decouples task maximization from style degradation.
+          <ul style="list-style-type: circle; margin-top: 0.5rem; margin-left: 1.5rem;">
+            <li><strong>Superior Trade-off ($\lambda > r$):</strong> Significantly improves task performance over the base model ($\lambda$) while maintaining better style alignment than all SORL variants.</li>
+            <li><strong>Prevention of Style Collapse:</strong> Unlike SORL, GAWR enables SCIQL to aggressively learn the task without sacrificing the behavioral prior.</li>
+            <li><strong>High-Performance Mode ($r > \lambda$):</strong> Achieves task performance on par with or superior to the strongest SORL baselines.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <figure class="image result-figure mb-5">
+        <img src="include/sctpo.png" alt="Style-conditioned task performance optimization (SCTPO)">
+        <figcaption class="fig-cap">Style-conditioned task performance optimization (SCTPO)</figcaption>
+      </figure>
+
+      <figure class="image result-figure mb-5">
+        <img src="include/relative_histograms_with_errorbars.png" alt="Relative change in style alignment and task performance">
+        <figcaption class="fig-cap">Relative histograms with error bars</figcaption>
+      </figure>
+      
+
+      <!-- 3. Pareto Analysis -->
+      <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
+        <li>
+          <strong>Pareto Analysis & Metric Trade-offs:</strong> We quantify the asymmetric trade-offs between task and style using complementary metrics, confirming that SCIQL shifts the frontier closer to theoretical perfection.
+          <ul style="list-style-type: circle; margin-top: 0.5rem; margin-left: 1.5rem;">
+            <li><strong>Hypervolume (HV):</strong> SCIQL achieves a substantial improvement of <strong>+41.2% to +67.9%</strong> compared to SORL.</li>
+            <li><strong>Distance to ideal point:</strong> The $\lambda > r$ configuration reduces the Euclidean distance to the ideal point $(100, 100)$ by <strong>18 to 28% compared to the best SORL variant</strong>.</li>
+            <li><strong>Asymmetric Optimization:</strong> Crucially, SCIQL ($\lambda > r$) boosts task performance while <em>preserving</em> the high style alignment of the base policy.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <figure class="image result-figure mb-5">
+        <img src="include/pareto.png" alt="Pareto fronts and hypervolumes">
+        <figcaption class="fig-cap">Pareto fronts and hypervolumes of SORL and SCIQL</figcaption>
+      </figure>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Conclusion</h2>
+      <div class="content">
+        <p>
+          We propose a novel general definition of behavior styles within the sequential decision making framework and instantiate it by the use of labeling functions to learn <strong>interpretable</strong> styles with a low <strong>labeling cost</strong> and easy <strong>alignment measurement</strong> while effectively avoiding unnecessary <strong>credit assignment</strong> issues by relying on subtrajectories labeling.
+        </p>
+        <p>
+          We then present the SCIQL algorithm which leverages Gated AWR to solve long-term decision making and trajectory stitching challenges while providing superior performance in both style alignment and style-conditioned task performance compared to previous work.
+        </p>
+        <p>
+          We think that our framework opens the door to several interesting research directions:
+        </p>
+        <ul style="list-style-type: disc; padding-left: 1.5rem;">
+          <li>
+            <strong>Multiplicity of criteria:</strong> An interesting next step would be to find ways to scale the framework to a multiplicity of criteria.
+          </li>
+          <li>
+            <strong>Enhanced representations:</strong> Finding mechanisms to enhance the representation span of labeling functions could also be interesting.
+          </li>
+          <li>
+            <strong>Zero-shot capabilities:</strong> Finally, integrating zero-shot capabilities to generate on the fly style-conditioned reinforcement learning policies would be worthwhile to explore.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Videos -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div id="controls" class="box">
+      <h2 class="title is-4 mb-3">Visualize SCIQL's Stylized Policies</h2>
+        <p>
+          Select bellow environments and a style labels to visualize the rollouts of the corresponding SCIQL($\lambda$) trained policies:
+        </p>
+      <!-- Selector + actions -->
+      <div id="menubar" class="mb-3">
+        <div class="buttons are-small">
+          <button id="menuTrigger" class="button is-primary is-light">
+            <span>Choose environment → click labels to toggle.</span>
+            <span class="icon">▾</span>
+          </button>
+          <button id="displayAllBtn" class="button is-light">Display all</button>
+          <button id="clearAllBtn" class="button is-light">Clear all</button>
+        </div>
+
+        <!-- Cascading menu -->
+        <div id="menuRoot" class="menu-root" role="menu" aria-hidden="true"></div>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Videos inside the same box -->
+      <div id="rowsContainer"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* --- Menu styling --- */
+#menubar { position: relative; display: inline-block; }
+#menuTrigger { border-radius: 999px; }
+.menu-root{
+  display:none; position:absolute; top:100%; left:0; z-index:50;
+  background:#fff; border:1px solid #dcdcdc; border-radius:10px;
+  box-shadow:0 10px 26px rgba(10,10,10,.12); padding:.25rem 0; min-width:240px;
+}
+#menubar:hover .menu-root{ display:block; }
+
+.menu-header{
+  font-weight:600; font-size:.8rem; color:#4a4a4a;
+  padding:.5rem .75rem .25rem .75rem; border-bottom:1px solid #eee; margin-bottom:.25rem;
+}
+
+.menu-col{ position:relative; }
+.menu-list{ list-style:none; margin:0; padding:.25rem 0; }
+.menu-item{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.5rem .75rem; gap:.75rem; cursor:default; white-space:nowrap;
+}
+.menu-item:hover{ background: rgba(10,10,10,0.05); }
+.menu-item .arrow{ opacity:.55; }
+
+/* Submenu (labels) — overlap to the right and also slightly upward to avoid hover loss */
+.submenu{
+  display:none; position:absolute; top:-6px; left:100%; margin-left:-1px; /* <- raised */
+  background:#fff; border:1px solid #dcdcdc; border-left:0;
+  border-radius:10px; box-shadow:0 10px 26px rgba(10,10,10,.12);
+  padding:.25rem 0 .25rem 0; min-width:260px;
+}
+.menu-col:hover > .submenu{ display:block; }
+
+/* Remove Bulma's nested menu left border (the vertical bar) */
+.menu-list li > ul,
+.menu-list li ul {
+  border-left: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Full-row clickable label item — no hover bar */
+.label-row{
+  display:flex; align-items:center; gap:.6rem;
+  width:100%; padding:.5rem .75rem; cursor:pointer; user-select:none;
+}
+.label-row:hover,
+.label-row:focus,
+.label-row:active {
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.label-row input[type="checkbox"]{ margin-right:.25rem; }
+
+/* Simple videos */
+.video-col video { width:100%; height:auto; display:block; }
+
+@media print{ #controls{ display:none !important; } }
+</style>
+
+<script>
+// Hard-coded manifest
+const MANIFEST = {
+  "circle2d-inplace": {
+    position:[0,1,2,3,4,5,6,7],
+    curvature_noise:[0,1,2],
+    movement_direction:[0,1,2,3,4,5,6,7],
+    radius:[0,1,2],
+    speed:[0,1,2],
+    turn_direction:[0,1]
+  },
+  "halfcheetah-fix": {
+    angle:[0,1,2],
+    backfoot:[0,1,2,3],
+    frontfoot:[0,1,2,3],
+    speed:[0,1,2],
+    torso:[0,1,2]
+  }
+};
+
+const BASE = "./static/videos/rollouts";
+const menuRoot = document.getElementById("menuRoot");
+const rowsContainer = document.getElementById("rowsContainer");
+const displayAllBtn = document.getElementById("displayAllBtn");
+const clearAllBtn = document.getElementById("clearAllBtn");
+
+// Selection state: { env -> Set(labels) }
+const selected = new Map();
+
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function el(tag, attrs={}, html=''){ const n=document.createElement(tag); for(const[k,v] of Object.entries(attrs)) n.setAttribute(k,v); if(html) n.innerHTML=html; return n; }
+const labelsOfEnv = (env) => Object.keys(MANIFEST[env]).sort();
+
+/* Build cascading menu (adds an "All" row per environment) */
+function buildMenu(){
+  // reset and add Environment header
+  menuRoot.innerHTML = '<div class="menu-header">Environment</div>';
+
+  const envList = el("ul",{class:"menu-list"});
+
+  Object.keys(MANIFEST).sort().forEach(env=>{
+    const col = el("li",{class:"menu-col"});
+
+    const envRow = el("div",{class:"menu-item"});
+    envRow.appendChild(el("span",{},env));
+    envRow.appendChild(el("span",{class:"arrow"},"▸"));
+    col.appendChild(envRow);
+
+    const submenu = el("div",{class:"submenu"});
+    // Labels header
+    submenu.appendChild(el("div",{class:"menu-header"},"Labels"));
+
+    const labelList = el("ul",{class:"menu-list"});
+
+    // --- "All" row ---
+    const allLi = el("li");
+    const allRow = el("label",{class:"label-row", tabindex:"0"});
+    const allCb  = document.createElement("input");
+    allCb.type="checkbox"; allCb.dataset.env=env; allCb.dataset.all="1";
+    const allText = document.createElement("span"); allText.textContent = "All";
+
+    const setAll = (checked) => {
+      if (checked) {
+        selected.set(env, new Set(labelsOfEnv(env)));
+      } else {
+        selected.delete(env);
+      }
+      syncMenuChecksForEnv(env);
+      render();
+    };
+    const toggleAll = ()=> setAll(!allCb.checked);
+
+    allRow.addEventListener("click",(e)=>{
+      if (e.target === allCb) return;   // let the checkbox handle its own click
+      e.preventDefault();
+      toggleAll();
+    });
+    allRow.addEventListener("keydown",(e)=>{
+      if(e.key===' '||e.key==='Enter'){
+        e.preventDefault();
+        toggleAll();
+      }
+    });
+    allCb.addEventListener("change", ()=> setAll(allCb.checked));
+
+    allRow.appendChild(allCb); allRow.appendChild(allText);
+    allLi.appendChild(allRow); labelList.appendChild(allLi);
+
+    // --- Individual labels ---
+    labelsOfEnv(env).forEach(label=>{
+      const li = el("li");
+      const row = el("label",{class:"label-row", tabindex:"0"});
+      const cb  = document.createElement("input");
+      cb.type="checkbox"; cb.dataset.env=env; cb.dataset.label=label;
+
+      const text = document.createElement("span");
+      text.textContent = label;
+
+      const applyToggle = (checked)=>{
+        if(!selected.has(env)) selected.set(env,new Set());
+        const set = selected.get(env);
+        checked ? set.add(label) : set.delete(label);
+        if(set.size===0) selected.delete(env);
+        syncMenuChecksForEnv(env); // keep "All" in sync
+        render();
+      };
+      const toggle = ()=> applyToggle(!cb.checked);
+
+      row.addEventListener("click", (e)=>{
+        if (e.target === cb) return;   // checkbox click handled via "change"
+        e.preventDefault();
+        toggle();
+      });
+      row.addEventListener("keydown", (e)=>{
+        if(e.key===' '||e.key==='Enter'){
+          e.preventDefault();
+          toggle();
+        }
+      });
+      cb.addEventListener("change", ()=> applyToggle(cb.checked));
+
+      row.appendChild(cb); row.appendChild(text);
+      li.appendChild(row); labelList.appendChild(li);
+    });
+
+    submenu.appendChild(labelList);
+    col.appendChild(submenu);
+    envList.appendChild(col);
+  });
+
+  menuRoot.appendChild(envList);
+}
+
+/* Sync check states for a single environment (incl. indeterminate "All") */
+function syncMenuChecksForEnv(env){
+  const allCb = menuRoot.querySelector(`input[type="checkbox"][data-env="${env}"][data-all="1"]`);
+  const labelCbs = [...menuRoot.querySelectorAll(`input[type="checkbox"][data-env="${env}"]:not([data-all])`)];
+  const set = selected.get(env) || new Set();
+
+  // Sync individual boxes
+  labelCbs.forEach(cb => cb.checked = set.has(cb.dataset.label));
+
+  // Sync ALL state: checked, unchecked, or indeterminate
+  if (!labelCbs.length) {
+    if (allCb) { allCb.checked = false; allCb.indeterminate = false; }
+    return;
+  }
+  const total = labelCbs.length;
+  const chosen = set.size;
+
+  if (allCb) {
+    allCb.indeterminate = chosen > 0 && chosen < total;
+    allCb.checked = chosen === total;
+  }
+}
+
+/* Global helpers */
+function selectAll(){
+  selected.clear();
+  Object.entries(MANIFEST).forEach(([env, labelsObj])=>{
+    selected.set(env, new Set(Object.keys(labelsObj)));
+    syncMenuChecksForEnv(env);
+  });
+  syncMenuChecksForAll();
+  render();
+}
+function clearAll(){
+  selected.clear();
+  syncMenuChecksForAll();
+  render();
+}
+function syncMenuChecksForAll(){
+  Object.keys(MANIFEST).forEach(env => syncMenuChecksForEnv(env));
+}
+
+/* Render rows: 4 per row; captions **bold** "Label N" */
+function render(){
+  rowsContainer.innerHTML = "";
+
+  Array.from(selected.keys()).sort().forEach(env=>{
+    const labels = Array.from(selected.get(env)).sort();
+    labels.forEach(label=>{
+      const nums = MANIFEST[env][label] || [];
+      if(!nums.length) return;
+
+      rowsContainer.appendChild(
+        el("h3",{class:"title is-5 mt-5 mb-3"},`${cap(env)} — ${cap(label)}`)
+      );
+
+      const wrap = el("div",{class:"columns is-multiline is-variable is-3"});
+      nums.forEach(i=>{
+        const col = el("div",{class:"column is-one-quarter-desktop is-half-tablet is-full-mobile video-col"});
+        col.innerHTML = `
+          <video autoplay muted loop playsinline controls>
+            <source src="${BASE}/${env}/${label}/label_${i}.mp4" type="video/mp4">
+          </video>
+          <p class="has-text-centered is-size-7 mt-1"><strong>Label ${i}</strong></p>
+        `;
+        wrap.appendChild(col);
+      });
+      rowsContainer.appendChild(wrap);
+    });
+  });
+
+  if(!rowsContainer.children.length){
+    rowsContainer.innerHTML = '<p class="has-text-grey">No labels selected.</p>';
+  }
+}
+
+/* Init */
+buildMenu();
+selectAll();  // show everything by default
+
+/* Actions */
+displayAllBtn.addEventListener('click', selectAll);
+clearAllBtn.addEventListener('click', clearAll);
+</script>
+
+
 <footer class="footer">
   <div class="container">
     <div class="columns is-centered">
