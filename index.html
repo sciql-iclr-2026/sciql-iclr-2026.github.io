@@ -418,6 +418,9 @@ const MANIFEST = {
     frontfoot:[0,1,2,3],
     speed:[0,1,2],
     torso:[0,1,2]
+  },
+  "humenv": {
+    head:[0,1],
   }
 };
 
@@ -619,6 +622,201 @@ displayAllBtn.addEventListener('click', selectAll);
 clearAllBtn.addEventListener('click', clearAll);
 </script>
 
+<!-- ===== NEW SECTION: Style Conditioned Task Performance Optimization ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Style Conditioned Task Performance Optimization</h2>
+      
+      <div class="content has-text-justified mb-5">
+        <p>
+           We observe that, for the head height labels in HumEnv, while baselines attempt to preserve style alignment, <strong>SORL</strong> ($\beta=0$) struggles to maintain standing positions using label information alone. The inclusion of reward signals, which correlate with the standing posture required for the sprint, helps <strong>SORL</strong> ($\beta > 0$) recover alignment on Label 1. In contrast, <strong>SCIQL</strong> demonstrates near-perfect alignment in all configurations. Furthermore, <strong>SCIQL</strong> surpasses <strong>SORL</strong> in task performance across variants while strictly preserving style.
+        </p>
+      </div>
+
+      <!-- CUSTOM CSS -->
+      <style>
+        /* Flex formatting to ensure rows line up perfectly across groups */
+        .v-center-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 140px; /* Force consistent height for video rows */
+        }
+        
+        /* Group Box Styles */
+        .sorl-box {
+          border: 2px solid #b5b5b5;
+          background-color: #f5f5f5;
+          border-radius: 8px;
+          padding: 10px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .sciql-box {
+          border: 2px solid #d98200; /* Using the orange from your theme */
+          background-color: #fffaf0;
+          border-radius: 8px;
+          padding: 10px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* Typography */
+        .group-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; color: #666; margin-bottom: 5px; text-align: center;}
+        .col-header { font-weight: bold; font-size: 0.9rem; text-align: center; margin-bottom: 10px; min-height: 40px; display: flex; align-items: flex-end; justify-content: center;}
+        
+        /* Vertical Text Label */
+        .row-label-text { font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+        
+        /* Helper to contain video width */
+        .vid-container { width: 100%; }
+
+        /* Footer labels style */
+        .footer-label {
+          font-size: 0.75rem;
+          line-height: 1.2;
+          padding-top: 8px;
+          color: #555;
+        }
+      </style>
+
+      <!-- MAIN LAYOUT COLUMNS -->
+      <div class="columns is-variable is-2">
+
+        <!-- === 1. LEFT SIDEBAR (LABELS) === -->
+        <div class="column is-1 has-text-centered" style="display: flex; flex-direction: column; justify-content: center;">
+           <!-- Header alignment spacer -->
+           <div style="height: 60px;"></div>
+           
+           <!-- Label 0 -->
+           <div class="v-center-row">
+             <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 0</span>
+           </div>
+           
+           <!-- Label 1 -->
+           <div class="v-center-row">
+            <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 1</span>
+           </div>
+           
+           <!-- Arrow spacer -->
+           <div style="height: 40px;"></div>
+        </div>
+
+
+        <!-- === 2. SORL GROUP (GREY BOX) === -->
+        <div class="column">
+          <div class="sorl-box">
+            <div class="group-title">Baselines</div>
+            
+            <!-- Headers -->
+            <div class="columns is-mobile is-variable is-1 mb-0">
+              <div class="column col-header">SORL ($\beta=0$)</div>
+              <div class="column col-header">SORL ($\beta=3$)</div>
+            </div>
+
+            <!-- Row 1: Label 0 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sorl_beta_0.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sorl_beta_3.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Row 2: Label 1 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sorl_beta_0.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sorl_beta_3.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Footer Labels -->
+            <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #ccc;">
+              <div class="column has-text-centered footer-label">
+                Without Task Optimization
+              </div>
+              <div class="column has-text-centered footer-label">
+                With Task Optimization <br>(run faster)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- === 3. SCIQL GROUP (ORANGE BOX) === -->
+        <div class="column">
+          <div class="sciql-box">
+            <div class="group-title has-text-orange">Ours</div>
+
+            <!-- Headers -->
+            <div class="columns is-mobile is-variable is-1 mb-0">
+              <div class="column col-header">SCIQL ($\lambda$)</div>
+              <div class="column col-header">SCIQL ($\lambda > r$)</div>
+            </div>
+
+            <!-- Row 1: Label 0 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sciql_lambda.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sciql_lambda_r.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Row 2: Label 1 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sciql_lambda.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sciql_lambda_r.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+             <!-- Footer Labels -->
+             <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #d98200;">
+              <div class="column has-text-centered footer-label has-text-orange">
+                Without Task Optimization
+              </div>
+              <div class="column has-text-centered footer-label has-text-orange">
+                With Task Optimization <br>(run faster)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div> <!-- End Main Columns -->
+
+    </div>
+  </div>
+</section>
 
 <footer class="footer">
   <div class="container">
