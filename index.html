@@ -112,6 +112,235 @@
   </div>
 </section>
 
+<!-- Videos -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div id="controls" class="box">
+      <h2 class="title is-4 mb-3">Style Alignment</h2>
+        <p>
+          SCIQL displays significantly higher style alignment performance than the previous style conditioned offline reinforcement learning and imitation learning methods. Select bellow environments and a style labels to visualize the stylized rollouts performed <strong>at inference</strong> by our SCIQL($\lambda$) trained policies:
+        </p>
+      <!-- Selector + actions -->
+      <div id="menubar" class="mb-3">
+        <div class="buttons are-small">
+          <button id="menuTrigger" class="button is-primary is-light">
+            <span>Choose environment → click labels to toggle.</span>
+            <span class="icon">▾</span>
+          </button>
+          <button id="displayAllBtn" class="button is-light">Display all</button>
+          <button id="clearAllBtn" class="button is-light">Clear all</button>
+        </div>
+
+        <!-- Cascading menu -->
+        <div id="menuRoot" class="menu-root" role="menu" aria-hidden="true"></div>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Videos inside the same box -->
+      <div id="rowsContainer"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEW SECTION: Style Conditioned Task Performance Optimization ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="box">
+      <h2 class="title is-4 mb-3">Style Conditioned Task Performance Optimization</h2>
+      
+      <div class="content has-text-justified mb-5">
+        <p>
+          Thanks to its Gated Advantage Weighted Regression mechanism, SCIQL is capable of optimizing task performance while preserving style alignment, even on high-dimensional tasks. For instance, for the head height labels in HumEnv-Simple, <strong>SORL</strong> ($\beta=0$) struggles to maintain standing positions using label information alone. The inclusion of reward signals, which correlate with the standing posture required for the sprint, helps <strong>SORL</strong> ($\beta > 0$) recover alignment on Label 1, but with limited task performance. In contrast, <strong>SCIQL</strong> demonstrates near-perfect alignment in all configurations. Furthermore, <strong>SCIQL</strong> surpasses <strong>SORL</strong> in task performance across variants while strictly preserving style alignment.
+        </p>
+      </div>
+
+      <!-- CUSTOM CSS -->
+      <style>
+        /* Flex formatting to ensure rows line up perfectly across groups */
+        .v-center-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 140px; /* Force consistent height for video rows */
+        }
+        
+        /* Group Box Styles */
+        .sorl-box {
+          border: 2px solid #b5b5b5;
+          background-color: #f5f5f5;
+          border-radius: 8px;
+          padding: 10px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .sciql-box {
+          border: 2px solid #d98200; /* Using the orange from your theme */
+          background-color: #fffaf0;
+          border-radius: 8px;
+          padding: 10px;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* Typography */
+        .group-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; color: #666; margin-bottom: 5px; text-align: center;}
+        .col-header { font-weight: bold; font-size: 0.9rem; text-align: center; margin-bottom: 10px; min-height: 40px; display: flex; align-items: flex-end; justify-content: center;}
+        
+        /* Vertical Text Label */
+        .row-label-text { font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+        
+        /* Helper to contain video width */
+        .vid-container { width: 100%; }
+
+        /* Footer labels style */
+        .footer-label {
+          font-size: 0.75rem;
+          line-height: 1.2;
+          padding-top: 8px;
+          color: #555;
+        }
+      </style>
+
+      <!-- MAIN LAYOUT COLUMNS -->
+      <div class="columns is-variable is-2">
+
+        <!-- === 1. LEFT SIDEBAR (LABELS) === -->
+        <div class="column is-1 has-text-centered" style="display: flex; flex-direction: column; justify-content: center;">
+           <!-- Header alignment spacer -->
+           <div style="height: 60px;"></div>
+           
+           <!-- Label 0 -->
+           <div class="v-center-row">
+             <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 0</span>
+           </div>
+           
+           <!-- Label 1 -->
+           <div class="v-center-row">
+            <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 1</span>
+           </div>
+           
+           <!-- Arrow spacer -->
+           <div style="height: 40px;"></div>
+        </div>
+
+
+        <!-- === 2. SORL GROUP (GREY BOX) === -->
+        <div class="column">
+          <div class="sorl-box">
+            <div class="group-title">Baselines</div>
+            
+            <!-- Headers -->
+            <div class="columns is-mobile is-variable is-1 mb-0">
+              <div class="column col-header">SORL ($\beta=0$)</div>
+              <div class="column col-header">SORL ($\beta=3$)</div>
+            </div>
+
+            <!-- Row 1: Label 0 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sorl_beta_0.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sorl_beta_3.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Row 2: Label 1 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sorl_beta_0.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sorl_beta_3.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Footer Labels -->
+            <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #ccc;">
+              <div class="column has-text-centered footer-label">
+                Without Task Optimization
+              </div>
+              <div class="column has-text-centered footer-label">
+                With Task Optimization <br>(run faster)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- === 3. SCIQL GROUP (ORANGE BOX) === -->
+        <div class="column">
+          <div class="sciql-box">
+            <div class="group-title has-text-orange">Ours</div>
+
+            <!-- Headers -->
+            <div class="columns is-mobile is-variable is-1 mb-0">
+              <div class="column col-header">SCIQL ($\lambda$)</div>
+              <div class="column col-header">SCIQL ($\lambda > r$)</div>
+            </div>
+
+            <!-- Row 1: Label 0 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sciql_lambda.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_0_sciql_lambda_r.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <!-- Row 2: Label 1 -->
+            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sciql_lambda.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="column vid-container">
+                <video autoplay controls muted loop playsinline width="100%">
+                  <source src="static/videos/task_performance/label_1_sciql_lambda_r.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+             <!-- Footer Labels -->
+             <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #d98200;">
+              <div class="column has-text-centered footer-label has-text-orange">
+                Without Task Optimization
+              </div>
+              <div class="column has-text-centered footer-label has-text-orange">
+                With Task Optimization <br>(run faster)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div> <!-- End Main Columns -->
+
+    </div>
+  </div>
+</section>
+
 <!-- ===== 1. SCALING OFFLINE GCRL ===== -->
 <section class="section">
   <div class="container is-max-desktop">
@@ -120,7 +349,7 @@
       <ul style="list-style-type: disc; padding-left: 1.5rem;">
         <li><strong>Style definition:</strong> Existing approaches trade off interpretability, labeling cost, alignment measurement, and credit assignment, making a general definition difficult.</li>
         <li><strong>Distribution shift:</strong> Style conditioning exacerbates offline RL distribution shift, creating mismatches between visited states and target styles that hinder robust alignment.</li>
-        <li><strong>Task–style misalignment:</strong> Task performance and style alignment often conflict, and prior solutions sacrifice alignment when optimizing for tasks.</li>
+        <li><strong>Task–style misalignment:</strong> Task performance and style alignment often conflict, and prior solutions sacrifice alignment when optimizing for task performance.</li>
       </ul>
     </div>
   </div>
@@ -168,7 +397,7 @@
       
       <!-- 1. Task Values -->
       <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
-        <li><strong>Task Value Learning (IQL):</strong> We employ Implicit Q-Learning to learn the task utility. By using expectile regression, we estimate the value of the best actions within the dataset support without querying out-of-distribution samples, providing a stable signal for task maximization.</li>
+        <li><strong>Task Value Learning (IQL):</strong> We employ Implicit Q-Learning to learn the task utility. By using expectile regression, we estimate the value of the best actions within the dataset support without querying out-of-distribution samples, providing a stable signal for task performance optimization.</li>
       </ul>
       <figure class="image eq-figure mb-5">
         <img src="include/task_values.png" alt="Task-value objective (IQL head)">
@@ -195,7 +424,7 @@
 
       <!-- 4. Pipeline -->
       <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
-        <li><strong>SCIQL Pipeline:</strong> The full architecture integrates offline trajectory processing with style relabeling to improve task performance while preserving style alignment. In practice, this can be done within one global loop.</li>
+        <li><strong>SCIQL Pipeline:</strong> The full architecture integrates offline learning with style relabeling to improve task performance while preserving style alignment. In practice, this can be done within one global loop.</li>
       </ul>
       <figure class="image eq-figure">
         <img src="include/algo.png" alt="SCIQL pipeline">
@@ -227,7 +456,7 @@
       </ul>
       
       <figure class="image result-figure mb-5">
-        <img src="include/style_alignment.png" alt="Style alignment results">
+        <img src="include/style_alignment_humenv.png" alt="Style alignment results">
         <figcaption class="fig-cap">Style alignment results</figcaption>
       </figure>
 
@@ -235,7 +464,7 @@
       <!-- 2. SCTPO Results -->
       <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
         <li>
-          <strong>Style-Conditioned Task Performance Optimization (SCTPO):</strong> We compare SCIQL variants (using GAWR) against SORL baselines, demonstrating that GAWR effectively decouples task maximization from style degradation.
+          <strong>Style-Conditioned Task Performance Optimization (SCTPO):</strong> We compare SCIQL variants (using GAWR) against SORL baselines, demonstrating that GAWR effectively decouples task performance maximization from style alignment degradation.
           <ul style="list-style-type: circle; margin-top: 0.5rem; margin-left: 1.5rem;">
             <li><strong>Superior Trade-off ($\lambda > r$):</strong> Significantly improves task performance over the base model ($\lambda$) while maintaining better style alignment than all SORL variants.</li>
             <li><strong>Prevention of Style Collapse:</strong> Unlike SORL, GAWR enables SCIQL to aggressively learn the task without sacrificing the behavioral prior.</li>
@@ -245,22 +474,16 @@
       </ul>
 
       <figure class="image result-figure mb-5">
-        <img src="include/sctpo.png" alt="Style-conditioned task performance optimization (SCTPO)">
+        <img src="include/sctpo_humenv.png" alt="Style-conditioned task performance optimization (SCTPO)">
         <figcaption class="fig-cap">Style-conditioned task performance optimization (SCTPO)</figcaption>
       </figure>
-
-      <figure class="image result-figure mb-5">
-        <img src="include/relative_histograms_with_errorbars.png" alt="Relative change in style alignment and task performance">
-        <figcaption class="fig-cap">Relative histograms with error bars</figcaption>
-      </figure>
-      
 
       <!-- 3. Pareto Analysis -->
       <ul style="list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem;">
         <li>
           <strong>Pareto Analysis & Metric Trade-offs:</strong> We quantify the asymmetric trade-offs between task and style using complementary metrics, confirming that SCIQL shifts the frontier closer to theoretical perfection.
           <ul style="list-style-type: circle; margin-top: 0.5rem; margin-left: 1.5rem;">
-            <li><strong>Hypervolume (HV):</strong> SCIQL achieves a substantial improvement of <strong>+41.2% to +67.9%</strong> compared to SORL.</li>
+            <li><strong>Hypervolume (HV):</strong> SCIQL achieves a substantial improvement of <strong>+41.2% to +163.9%</strong> compared to SORL.</li>
             <li><strong>Distance to ideal point:</strong> The $\lambda > r$ configuration reduces the Euclidean distance to the ideal point $(100, 100)$ by <strong>18 to 28% compared to the best SORL variant</strong>.</li>
             <li><strong>Asymmetric Optimization:</strong> Crucially, SCIQL ($\lambda > r$) boosts task performance while <em>preserving</em> the high style alignment of the base policy.</li>
           </ul>
@@ -268,7 +491,7 @@
       </ul>
 
       <figure class="image result-figure mb-5">
-        <img src="include/pareto.png" alt="Pareto fronts and hypervolumes">
+        <img src="include/pareto_humenv.png" alt="Pareto fronts and hypervolumes">
         <figcaption class="fig-cap">Pareto fronts and hypervolumes of SORL and SCIQL</figcaption>
       </figure>
 
@@ -302,39 +525,6 @@
           </li>
         </ul>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- Videos -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-
-<section class="section">
-  <div class="container is-max-desktop">
-    <div id="controls" class="box">
-      <h2 class="title is-4 mb-3">Visualize SCIQL's Stylized Policies</h2>
-        <p>
-          Select bellow environments and a style labels to visualize the rollouts of the corresponding SCIQL($\lambda$) trained policies:
-        </p>
-      <!-- Selector + actions -->
-      <div id="menubar" class="mb-3">
-        <div class="buttons are-small">
-          <button id="menuTrigger" class="button is-primary is-light">
-            <span>Choose environment → click labels to toggle.</span>
-            <span class="icon">▾</span>
-          </button>
-          <button id="displayAllBtn" class="button is-light">Display all</button>
-          <button id="clearAllBtn" class="button is-light">Clear all</button>
-        </div>
-
-        <!-- Cascading menu -->
-        <div id="menuRoot" class="menu-root" role="menu" aria-hidden="true"></div>
-      </div>
-
-      <hr class="my-4">
-
-      <!-- Videos inside the same box -->
-      <div id="rowsContainer"></div>
     </div>
   </div>
 </section>
@@ -414,13 +604,17 @@ const MANIFEST = {
   },
   "halfcheetah-fix": {
     angle:[0,1,2],
-    backfoot:[0,1,2,3],
-    frontfoot:[0,1,2,3],
+    backfoot_height:[0,1,2,3],
+    frontfoot_height:[0,1,2,3],
     speed:[0,1,2],
-    torso:[0,1,2]
+    torso_height:[0,1,2]
   },
-  "humenv": {
-    head:[0,1],
+  "humenv-simple": {
+    head_height:[0,1],
+  },
+  "humenv-complex": {
+    speed:[0,1,2],
+    head_height:[0,1,2]
   }
 };
 
@@ -615,208 +809,12 @@ function render(){
 
 /* Init */
 buildMenu();
-selectAll();  // show everything by default
+// selectAll();  // show everything by default
 
 /* Actions */
 displayAllBtn.addEventListener('click', selectAll);
 clearAllBtn.addEventListener('click', clearAll);
 </script>
-
-<!-- ===== NEW SECTION: Style Conditioned Task Performance Optimization ===== -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="box">
-      <h2 class="title is-4 mb-3">Style Conditioned Task Performance Optimization</h2>
-      
-      <div class="content has-text-justified mb-5">
-        <p>
-           We observe that, for the head height labels in HumEnv, while baselines attempt to preserve style alignment, <strong>SORL</strong> ($\beta=0$) struggles to maintain standing positions using label information alone. The inclusion of reward signals, which correlate with the standing posture required for the sprint, helps <strong>SORL</strong> ($\beta > 0$) recover alignment on Label 1. In contrast, <strong>SCIQL</strong> demonstrates near-perfect alignment in all configurations. Furthermore, <strong>SCIQL</strong> surpasses <strong>SORL</strong> in task performance across variants while strictly preserving style.
-        </p>
-      </div>
-
-      <!-- CUSTOM CSS -->
-      <style>
-        /* Flex formatting to ensure rows line up perfectly across groups */
-        .v-center-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 140px; /* Force consistent height for video rows */
-        }
-        
-        /* Group Box Styles */
-        .sorl-box {
-          border: 2px solid #b5b5b5;
-          background-color: #f5f5f5;
-          border-radius: 8px;
-          padding: 10px;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .sciql-box {
-          border: 2px solid #d98200; /* Using the orange from your theme */
-          background-color: #fffaf0;
-          border-radius: 8px;
-          padding: 10px;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        /* Typography */
-        .group-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; color: #666; margin-bottom: 5px; text-align: center;}
-        .col-header { font-weight: bold; font-size: 0.9rem; text-align: center; margin-bottom: 10px; min-height: 40px; display: flex; align-items: flex-end; justify-content: center;}
-        
-        /* Vertical Text Label */
-        .row-label-text { font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
-        
-        /* Helper to contain video width */
-        .vid-container { width: 100%; }
-
-        /* Footer labels style */
-        .footer-label {
-          font-size: 0.75rem;
-          line-height: 1.2;
-          padding-top: 8px;
-          color: #555;
-        }
-      </style>
-
-      <!-- MAIN LAYOUT COLUMNS -->
-      <div class="columns is-variable is-2">
-
-        <!-- === 1. LEFT SIDEBAR (LABELS) === -->
-        <div class="column is-1 has-text-centered" style="display: flex; flex-direction: column; justify-content: center;">
-           <!-- Header alignment spacer -->
-           <div style="height: 60px;"></div>
-           
-           <!-- Label 0 -->
-           <div class="v-center-row">
-             <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 0</span>
-           </div>
-           
-           <!-- Label 1 -->
-           <div class="v-center-row">
-            <span style="transform: rotate(-90deg); font-weight:bold; white-space:nowrap;">Label 1</span>
-           </div>
-           
-           <!-- Arrow spacer -->
-           <div style="height: 40px;"></div>
-        </div>
-
-
-        <!-- === 2. SORL GROUP (GREY BOX) === -->
-        <div class="column">
-          <div class="sorl-box">
-            <div class="group-title">Baselines</div>
-            
-            <!-- Headers -->
-            <div class="columns is-mobile is-variable is-1 mb-0">
-              <div class="column col-header">SORL ($\beta=0$)</div>
-              <div class="column col-header">SORL ($\beta=3$)</div>
-            </div>
-
-            <!-- Row 1: Label 0 -->
-            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_0_sorl_beta_0.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_0_sorl_beta_3.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <!-- Row 2: Label 1 -->
-            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_1_sorl_beta_0.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_1_sorl_beta_3.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <!-- Footer Labels -->
-            <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #ccc;">
-              <div class="column has-text-centered footer-label">
-                Without Task Optimization
-              </div>
-              <div class="column has-text-centered footer-label">
-                With Task Optimization <br>(run faster)
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-
-        <!-- === 3. SCIQL GROUP (ORANGE BOX) === -->
-        <div class="column">
-          <div class="sciql-box">
-            <div class="group-title has-text-orange">Ours</div>
-
-            <!-- Headers -->
-            <div class="columns is-mobile is-variable is-1 mb-0">
-              <div class="column col-header">SCIQL ($\lambda$)</div>
-              <div class="column col-header">SCIQL ($\lambda > r$)</div>
-            </div>
-
-            <!-- Row 1: Label 0 -->
-            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_0_sciql_lambda.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_0_sciql_lambda_r.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <!-- Row 2: Label 1 -->
-            <div class="columns is-mobile is-variable is-1 v-center-row mb-1">
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_1_sciql_lambda.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="column vid-container">
-                <video autoplay controls muted loop playsinline width="100%">
-                  <source src="static/videos/task_performance/label_1_sciql_lambda_r.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-             <!-- Footer Labels -->
-             <div class="columns is-mobile is-variable is-1 mt-auto" style="border-top: 1px dashed #d98200;">
-              <div class="column has-text-centered footer-label has-text-orange">
-                Without Task Optimization
-              </div>
-              <div class="column has-text-centered footer-label has-text-orange">
-                With Task Optimization <br>(run faster)
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div> <!-- End Main Columns -->
-
-    </div>
-  </div>
-</section>
 
 <footer class="footer">
   <div class="container">
