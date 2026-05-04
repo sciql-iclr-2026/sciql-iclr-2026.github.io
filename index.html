@@ -57,35 +57,65 @@
 </head>
 <body>
 
-<!-- Authors -->
+<!-- Front -->
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">Offline Reinforcement Learning of High-Quality Behaviors Under Robust Style Alignment</h1>
-              
-              <!-- Code Link. -->
+            
+            <!-- Authors -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://mathieu-petitbois.github.io/">Mathieu Petitbois</a><sup>1,2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=8xxuvpoAAAAJ&hl=en">Rémy Portelas</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=NuGN8SUAAAAJ&hl=en">Sylvain Lamprier</a><sup>2</sup>
+              </span>
+            </div>
+
+            <!-- Affiliations -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Ubisoft La Forge</span>
+              <span class="author-block"><sup>2</sup>University of Angers</span>
+            </div>
+            
+            <!-- Paper Link. -->
               <span class="link-block">
-                <a href="https://drive.google.com/file/d/1MimuO7RVa3O9Cse52YiDK1YB1WYL9Lo0/view?usp=sharing"
+                <a href="https://openreview.net/pdf?id=aasqk7fyEa"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
-                      <i class="fab fa-github"></i>
+                      <i class="fas fa-file-pdf"></i>
                   </span>
-                  <span>Code</span>
-                  </a>
+                  <span>Paper</span>
+                </a>
               </span>
 
-              <!-- Datasets -->
-              <span class="link-block">
-                <a href="https://drive.google.com/file/d/1BggqIv7sJCr2NBkdle15MPD-I2TM5sHr/view?usp=sharing"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="far fa-images"></i>
-                  </span>
-                  <span>Datasets</span>
-                  </a>
-              </span>
+            <!-- Code Link. -->
+            <span class="link-block">
+              <a href="https://drive.google.com/file/d/1MimuO7RVa3O9Cse52YiDK1YB1WYL9Lo0/view?usp=sharing"
+                  class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                    <i class="fab fa-github"></i>
+                </span>
+                <span>Code</span>
+                </a>
+            </span>
+
+            <!-- Datasets -->
+            <span class="link-block">
+              <a href="https://drive.google.com/file/d/1BggqIv7sJCr2NBkdle15MPD-I2TM5sHr/view?usp=sharing"
+                  class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                    <i class="far fa-images"></i>
+                </span>
+                <span>Datasets</span>
+                </a>
+            </span>
 
           </div>
         </div>
@@ -809,7 +839,7 @@ function render(){
 
 /* Init */
 buildMenu();
-// selectAll();  // show everything by default
+selectAll();  // show everything by default
 
 /* Actions */
 displayAllBtn.addEventListener('click', selectAll);
